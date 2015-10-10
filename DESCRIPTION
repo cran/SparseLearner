@@ -1,0 +1,16 @@
+Package: SparseLearner
+Title: Sparse Learning Algorithms Using a LASSO-Type Penalty for
+        Coefficient Estimation and Model Prediction
+Version: 1.0
+Author: Pi Guo, Yuantao Hao
+Maintainer: Pi Guo <guopi.01@163.com>
+Description: Performs the LASSO-type sparse learning algorithm and its improved versions such as Bolasso, bootstrap 
+  ranking LASSO, two-stage hybrid LASSO and so on for coefficient estimation and model prediction. These estimation 
+  procedures are applied in the fields of variable selection, graphical modeling and model prediction.
+Depends: R (>= 3.0.2),glmnet,SiZer,datasets,lqa,qgraph,SIS
+License: GPL-2
+LazyData: true
+Packaged: 2015-10-09 23:22:55 UTC; Administrator
+NeedsCompilation: no
+Repository: CRAN
+Date/Publication: 2015-10-10 23:08:00
