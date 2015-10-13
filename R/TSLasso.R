@@ -1,19 +1,22 @@
 #' Two-stage hybrid LASSO model.
 #'
-#' This function performs a LASSO logistic regression model using a two-stage hybrid procedure.
+#' This function performs a LASSO logistic regression model using a two-stage hybrid procedure, namely the TSLasso logistic regression model, produces an optimal set of predictors and returns the robust estimations of coefficients of the selected predictors.
 #'
-#' @param x the predictor matrix
-#' @param y the response variable, a numeric vector with values of 0 and 1
-#' @param lambda.candidates the lambda candidates in the cv.lqa function, with the default values from 0.001 to 5 by=0.01
-#' @param kfold the K-fold cross validation, with the default value 10
+#' @param x predictor matrix.
+#' @param y response variable, a factor object with values of 0 and 1.
+#' @param lambda.candidates the lambda candidates in the cv.lqa function, with the default values from 0.001 to 5 by=0.01.
+#' @param kfold the number of folds of cross validation - default is 10. Although kfold can be as large as the sample size (leave-one-out CV), it is not recommended for large datasets. Smallest value allowable is kfold=3.
+#' @param seed seed for random sampling, with the default value 0123.
 #' @export
 #' @import glmnet
 #' @import SiZer
 #' @import lqa
 #' @references
-#' [1] Guo, P., Zeng, F., Hu, X., Zhang, D., Zhu, S., Deng, Y., & Hao, Y. (2015). Improved Variable 
+#' [1] Guo, P., Zeng, F., Hu, X., Zhang, D., Zhu, S., Deng, Y., Hao, Y. (2015). Improved Variable 
 #' Selection Algorithm Using a LASSO-Type Penalty, with an Application to Assessing Hepatitis B 
 #' Infection Relevant Factors in Community Residents. PLoS One, 27;10(7):e0134151.
+#' Zou, H. (2006). The Adaptive Lasso And Its Oracle Properties. Journal of the American Statistical 
+#' Association, 101(476), 1418:1429.
 #' @examples
 #' library(datasets)
 #' head(iris)
@@ -22,12 +25,13 @@
 #' # Fit a two-stage hybrid LASSO (TSLasso) logistic regression model.
 #' # The parameters of lambda.candidates in the following example are set as small values to  
 #' # reduce the running time, however the default values are proposed.
-#' TSLasso.fit <- TSLasso(x=X, y=Y, lambda.candidates=list(seq(0.1, 1, by=0.05)), kfold=3)
+#' TSLasso.fit <- TSLasso(x=X, y=Y, lambda.candidates=list(seq(0.1, 1, by=0.05)), kfold=3, seed=0123)
 #' # Variables selected by the TSLasso model.
 #' TSLasso.fit$var.selected
 #' # Coefficients of the selected variables.
 #' TSLasso.fit$var.coef
-TSLasso=function(x, y, lambda.candidates=list(seq(0.001, 5, by=0.01)), kfold=10){
+TSLasso=function(x, y, lambda.candidates=list(seq(0.001, 5, by=0.01)), kfold=10, seed=0123){
+    set.seed(seed)
     varx <- colnames(x)
     rowx <- nrow(x)
     n <- length(y)

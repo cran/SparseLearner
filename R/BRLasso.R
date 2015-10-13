@@ -1,12 +1,13 @@
 #' Bootstrap ranking LASSO model.
 #'
-#' This function performs a LASSO logistic regression model using a bootstrap ranking procedure.
+#' This function performs a LASSO logistic regression model using a bootstrap ranking procedure, namely the BRLasso logistic regression model, produces an optimal set of predictors and returns the robust estimations of coefficients of the selected predictors.
 #'
-#' @param x the predictor matrix
-#' @param y the response variable, a factor object with values of 0 and 1 
-#' @param B the external loop for intersection operation, with the default value 5
-#' @param Boots the internal loop for bootstrap sampling, with the default value 100
-#' @param kfold the K-fold cross validation, with the default value 10
+#' @param x predictor matrix.
+#' @param y response variable, a factor object with values of 0 and 1. 
+#' @param B number of external loop for intersection operation, with the default value 5.
+#' @param Boots number of internal loop for bootstrap sampling, with the default value 100.
+#' @param kfold number of folds of cross validation - default is 10. Although kfold can be as large as the sample size (leave-one-out CV), it is not recommended for large datasets. Smallest value allowable is kfold=3.
+#' @param seed seed for random sampling, with the default value 0123.
 #' @export
 #' @import glmnet
 #' @import SiZer
@@ -22,12 +23,13 @@
 #' # Fit a bootstrap ranking LASSO (BRLasso) logistic regression model.
 #' # The parameters of B and Boots in the following example are set as small values to  
 #' # reduce the running time, however the default values are proposed. 
-#' BRLasso.fit <- BRLasso(x=X, y=Y, B=2, Boots=5)
+#' BRLasso.fit <- BRLasso(x=X, y=Y, B=2, Boots=5, seed=0123)
 #' # Variables selected by the BRLasso model.
 #' BRLasso.fit$var.selected
 #' # Coefficients of the selected variables
 #' BRLasso.fit$var.coef  
-BRLasso=function(x, y, B=5, Boots=100, kfold=10){
+BRLasso=function(x, y, B=5, Boots=100, kfold=10, seed=0123){
+    set.seed(seed)
     varx <- colnames(x)
     varx0 <- varx
     nvar <- length(varx)

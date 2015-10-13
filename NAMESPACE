@@ -2,7 +2,7 @@
 
 export(BRLasso)
 export(Bolasso)
-export(SGraph)
+export(Sparse.graph)
 export(TSLasso)
 import(SIS)
 import(SiZer)

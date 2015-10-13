@@ -2,10 +2,11 @@
 #'
 #' This function performs a Bolasso logistic regression model.
 #'
-#' @param x the predictor matrix
-#' @param y the response variable, a factor object with values of 0 and 1 
-#' @param BM the number of bootstrapping, with the default value 100
-#' @param kfold the K-fold cross validation, with the default value 10
+#' @param x predictor matrix.
+#' @param y response variable, a factor object with values of 0 and 1. 
+#' @param BM number of bootstrapping, with the default value 100.
+#' @param kfold number of folds of cross validation - default is 10.
+#' @param seed seed for random sampling, with the default value 0123.
 #' @export
 #' @import glmnet
 #' @references
@@ -19,10 +20,11 @@
 #' # Fit a Bolasso logistic regression model.
 #' # The BM parameter in the following example is set as small value to reduce  
 #' # the running time, however the default value is proposed. 
-#' Bolasso.fit <- Bolasso(x=X, y=Y, BM=5)
-#' # Variables selected by the Bolasso model.
+#' Bolasso.fit <- Bolasso(x=X, y=Y, BM=5, seed=0123)
+#' # Significant variables selected by the Bolasso model.
 #' Bolasso.fit$var.selected
-Bolasso=function(x, y, BM=100, kfold=10){
+Bolasso=function(x, y, BM=100, kfold=10, seed=0123){
+    set.seed(seed)
     varx <- colnames(x)
     rowx <- nrow(x)
     n <- length(y)

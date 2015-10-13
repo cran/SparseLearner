@@ -3,39 +3,67 @@
 \name{TSLasso}
 \alias{TSLasso}
 \title{Two-stage hybrid LASSO model.}
+\description{
+This function performs a LASSO logistic regression model using a two-stage hybrid procedure, 
+namely the TSLasso logistic regression model, produces an optimal set of predictors and returns 
+the robust estimations of coefficients of the selected predictors. 
+}
 \usage{
-TSLasso(x, y, lambda.candidates = list(seq(0.001, 5, by = 0.01)),
-  kfold = 10)
+TSLasso(x, y, lambda.candidates = list(seq(0.001, 5, by = 0.01)), kfold = 10, seed = 0123)
 }
 \arguments{
-\item{x}{the predictor matrix}
+\item{x}{predictor matrix.}
 
-\item{y}{the response variable, a numeric vector with values of 0 and 1}
+\item{y}{response variable, a factor object with values of 0 and 1.}
 
-\item{lambda.candidates}{the lambda candidates in the cv.lqa function, with the default values from 0.001 to 5 by=0.01}
+\item{lambda.candidates}{the lambda candidates in the cv.lqa function, with the default values from 0.001 to 5 by=0.01.}
 
-\item{kfold}{the K-fold cross validation, with the default value 10}
+\item{kfold}{the number of folds of cross validation - default is 10. Although kfold 
+can be as large as the sample size (leave-one-out CV), it is not recommended for 
+large datasets. Smallest value allowable is kfold=3.}
+
+\item{seed}{the seed for random sampling, with the default value 0123.}
 }
-\description{
-This function performs a LASSO logistic regression model using a two-stage hybrid procedure.
+\details{
+This function runs the LASSO logistic regression model using a two-stage hybrid 
+procedure. In the two-stage hybrid penalized regression model, the LASSO algorithm 
+is performed to obtain an initial estimator of the coefficients and to reduce the 
+dimension of the model. The coefficient estimates of variables screened by the first 
+stage are used for the weighting parameters of the adaptive LASSO in the second stage 
+to select consistent variables. Accordingly, a portion of irrelevant variables are 
+eliminated during the first stage and a relatively sparse set of variables is obtained. 
+The glmnet algorithm is used for the LASSO estimation in the first stage and the optimal 
+tuning parameter is selected via the K-fold cross-validation. The coefficients of the 
+adaptive LASSO are estimated using the local quadratic approximation algorithm, which 
+is proposed to approximate the nonconvex penalty function in generalized linear models 
+based on penalized likelihood inference. Users can reduce the running time by using 
+3-fold CV, but the proposed 10-fold CV is assumed by default.
+}
+\value{
+\item{var.selected}{significant variables that are selected by the TSLasso model.}
+
+\item{var.coef}{coefficients of the selected significant variables.}
+}
+\references{
+[1] Guo, P., Zeng, F., Hu, X., Zhang, D., Zhu, S., Deng, Y., Hao, Y. (2015). Improved Variable
+Selection Algorithm Using a LASSO-Type Penalty, with an Application to Assessing Hepatitis B
+Infection Relevant Factors in Community Residents. PLoS One, 27;10(7):e0134151.
+
+[2] Zou, H. (2006). The Adaptive Lasso And Its Oracle Properties. Journal of the American 
+Statistical Association, 101(476), 1418:1429.
 }
 \examples{
 library(datasets)
 head(iris)
-X <- as.matrix(subset(iris,iris$Species!="virginica")[,-5])
-Y <- as.numeric(ifelse(subset(iris,iris$Species!="virginica")[,5]=='versicolor', 0, 1))
+X <- as.matrix(subset(iris, iris$Species!="virginica")[, -5])
+Y <- as.numeric(ifelse(subset(iris,iris$Species!="virginica")[, 5]=='versicolor', 0, 1))
 # Fit a two-stage hybrid LASSO (TSLasso) logistic regression model.
 # The parameters of lambda.candidates in the following example are set as small values to
 # reduce the running time, however the default values are proposed.
-TSLasso.fit <- TSLasso(x=X, y=Y, lambda.candidates=list(seq(0.1, 1, by=0.05)), kfold=3)
+TSLasso.fit <- TSLasso(x=X, y=Y, lambda.candidates=list(seq(0.1, 1, by=0.05)), 
+                       kfold=3, seed=0123)
 # Variables selected by the TSLasso model.
 TSLasso.fit$var.selected
 # Coefficients of the selected variables.
 TSLasso.fit$var.coef
 }
-\references{
-[1] Guo, P., Zeng, F., Hu, X., Zhang, D., Zhu, S., Deng, Y., & Hao, Y. (2015). Improved Variable
-Selection Algorithm Using a LASSO-Type Penalty, with an Application to Assessing Hepatitis B
-Infection Relevant Factors in Community Residents. PLoS One, 27;10(7):e0134151.
-}
-
